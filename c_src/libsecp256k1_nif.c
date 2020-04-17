@@ -165,15 +165,8 @@ ec_seckey_verify(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     }
 
     if (privkey.size != 32) {
-    	return enif_make_badarg(env);
+		return error_result(env, "Private key size != 32 bytes");
 	}
-
-	secp256k1_scalar_set_b32(&key, b32, &overflow);
-	if (overflow || secp256k1_scalar_is_zero(&key)) {
-		return enif_make_int(env, 0);
-	}
-
-	secp256k1_scalar_get_b32(privkey.data, &key);
 
     result = secp256k1_ec_seckey_verify(ctx, privkey.data);
     return atom_from_result(env, result);
